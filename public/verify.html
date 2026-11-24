@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>이수번호 확인</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+:root{--bg:#F1F4FA;--surface:#fff;--ink:#141B2E;--muted:#586079;--line:#D5DDEE;--green:#1E4FA3;--green-ink:#12306B;--green-soft:#E3EAF8;--red:#B8352A;--red-soft:#FAE8E5}
+*{box-sizing:border-box}
+body{margin:0;font-family:Pretendard,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;background:var(--bg);color:var(--ink);word-break:keep-all}
+header{background:var(--green-ink);color:#fff;padding:16px 20px;font-weight:700}
+main{max-width:480px;margin:0 auto;padding:24px 16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px 20px}
+h1{font-size:21px;margin:0 0 4px}
+p{color:var(--muted);margin:0 0 16px;font-size:14.5px}
+input{width:100%;height:52px;border:1.5px solid var(--line);border-radius:10px;padding:0 14px;font:inherit;font-size:18px;letter-spacing:.03em;text-transform:uppercase}
+button{width:100%;height:52px;margin-top:10px;border:0;border-radius:10px;background:var(--green);color:#fff;font:inherit;font-weight:700;font-size:16px;cursor:pointer}
+.res{margin-top:16px;border-radius:12px;padding:16px;font-size:15.5px;line-height:1.7}
+.ok{background:var(--green-soft)} .no{background:var(--red-soft)}
+</style>
+</head>
+<body>
+<header>파견근로자 사전교육 이수 확인</header>
+<main><div class="card">
+  <h1>이수번호 조회</h1>
+  <p>근로자가 보여 준 이수증의 번호를 입력하면 실제 이수 여부를 확인할 수 있습니다.</p>
+  <form id="f"><input id="no" placeholder="MBC-261014-ABCD" autocomplete="off"><button>확인하기</button></form>
+  <div id="out"></div>
+</div></main>
+<script>
+document.getElementById('f').addEventListener('submit', async e => {
+  e.preventDefault();
+  const no = document.getElementById('no').value.trim().toUpperCase(), out = document.getElementById('out');
+  out.innerHTML=''; if(!no) return;
+  const d = document.createElement('div'); d.className='res';
+  try{
+    const r = await fetch('/api/verify/'+encodeURIComponent(no)); const j = await r.json();
+    if(!r.ok) throw new Error(j.error);
+    d.classList.add('ok');
+    d.textContent = `✓ 이수 확인됨\n이름: ${j.name}\n투입 부서: ${j.site}\n이수 일시: ${new Date(j.completedAt).toLocaleString('ko-KR',{timeZone:'Asia/Seoul'})}`;
+    d.style.whiteSpace='pre-line';
+  }catch(err){ d.classList.add('no'); d.textContent = err.message || '조회에 실패했습니다.'; }
+  out.append(d);
+});
+</script>
+</body>
+</html>

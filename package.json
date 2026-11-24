@@ -1,0 +1,9 @@
+{
+  "name": "mbc-pre-placement-training",
+  "version": "1.0.0",
+  "description": "MBC 파견근로자 사전교육 (에이스휴먼파워)",
+  "main": "server.js",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=18" },
+  "dependencies": { "express": "^4.19.2", "pg": "^8.11.5" }
+}

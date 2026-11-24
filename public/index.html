@@ -1,0 +1,648 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1E4FA3">
+<title>파견근로자 사전교육</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+:root{
+  --bg:#F1F4FA; --surface:#FFFFFF; --ink:#141B2E; --muted:#586079; --line:#D5DDEE;
+  --green:#1E4FA3; --green-ink:#12306B; --green-soft:#E3EAF8;
+  --red:#B8352A; --red-soft:#FAE8E5;
+  --tape:#F4C20D; --tape-ink:#1B1B16;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{
+  font-family:Pretendard,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  background:var(--bg); color:var(--ink); line-height:1.6; word-break:keep-all;
+  -webkit-font-smoothing:antialiased;
+  padding-top:env(safe-area-inset-top,0px);
+}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--tape);outline-offset:2px}
+
+/* 상단 */
+.top{background:var(--green-ink);color:#fff;padding:14px 18px 0}
+.top-in{max-width:720px;margin:0 auto}
+.brand{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.brand h1{font-size:17px;font-weight:700;margin:0;letter-spacing:-.01em}
+.brand span{font-size:13px;opacity:.75;white-space:nowrap}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:14px}
+.steps li{list-style:none;font-size:12.5px;padding:8px 0 10px;border-bottom:3px solid rgba(255,255,255,.18);opacity:.6}
+.steps li b{font-weight:700;margin-right:4px}
+.steps li.on{opacity:1;border-color:var(--tape)}
+.steps li.done{opacity:.9;border-color:rgba(255,255,255,.7)}
+.steps{padding:0;margin-bottom:0}
+
+main{max-width:720px;margin:0 auto;padding:20px 16px 120px}
+section[hidden]{display:none}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px 20px}
+h2{font-size:22px;line-height:1.35;margin:0 0 6px;letter-spacing:-.02em}
+.lead{color:var(--muted);margin:0 0 18px;font-size:15px}
+
+/* 폼 */
+.field{margin-bottom:16px}
+.field label{display:block;font-size:14px;font-weight:600;margin-bottom:6px}
+.field input,.field select{width:100%;height:52px;border:1.5px solid var(--line);border-radius:10px;padding:0 14px;background:#fff;font-size:17px}
+.field input:focus{border-color:var(--green);outline:none}
+.hint{font-size:13px;color:var(--muted);margin-top:4px}
+.agency{display:flex;justify-content:space-between;background:var(--green-soft);border-radius:10px;padding:12px 14px;font-size:15px;margin-bottom:16px}
+.consent{border:1.5px solid var(--line);border-radius:10px;padding:14px;font-size:13.5px;color:var(--muted);margin-bottom:12px}
+.consent dl{margin:0;display:grid;grid-template-columns:72px 1fr;gap:4px 8px}
+.consent dt{font-weight:600;color:var(--ink)}
+.consent dd{margin:0}
+.check{display:flex;gap:10px;align-items:flex-start;padding:12px 2px;font-size:15px;cursor:pointer}
+.check input{width:22px;height:22px;margin:1px 0 0;accent-color:var(--green);flex:none}
+.err{color:var(--red);font-size:14px;min-height:20px;margin:6px 0 0}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:54px;padding:0 22px;border-radius:12px;border:0;font-weight:700;font-size:17px;cursor:pointer;background:var(--green);color:#fff}
+.btn:disabled{background:#B9C6C1;color:#F4F7F6;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.btn.block{width:100%}
+
+/* 슬라이드 */
+.slide{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.slide-head{padding:22px 20px 18px;position:relative}
+.slide-head .count{font-size:13px;color:var(--muted);font-weight:600}
+.slide-head h2{margin-top:4px}
+.keyfig{display:flex;flex-wrap:wrap;align-items:flex-end;gap:6px 14px;padding:20px 20px 18px;background:var(--green);color:#fff}
+.keyfig .num{font-size:64px;line-height:.9;font-weight:800;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.keyfig .lbl{font-size:15px;font-weight:600;padding-bottom:6px;opacity:.95;flex:1 1 140px}
+.keyfig.long .num{font-size:48px}
+.slide.safety .keyfig{background:var(--tape);color:var(--tape-ink);
+  border-bottom:10px solid transparent;
+  border-image:repeating-linear-gradient(-45deg,var(--tape-ink) 0 12px,var(--tape) 12px 24px) 10}
+.illus{background:#EAF3EF;padding:14px 16px 6px;border-top:1px solid var(--line)}
+.slide.safety .illus{background:#FFF5D2}
+.illus svg{display:block;width:100%;height:auto;max-height:230px;margin:0 auto}
+.slide-body{padding:18px 20px 22px}
+
+.rules{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.rules li{display:grid;grid-template-columns:28px 1fr;gap:8px;align-items:start;padding:11px 12px;border-radius:10px;font-size:15.5px;line-height:1.5}
+.rules li .m{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:14px;font-weight:800;margin-top:0}
+.rules li.do{background:var(--green-soft)} .rules li.do .m{background:var(--green);color:#fff}
+.rules li.dont{background:var(--red-soft)} .rules li.dont .m{background:var(--red);color:#fff}
+.rules li.info{background:#F1F3F2} .rules li.info .m{background:#8A9792;color:#fff}
+
+.audio{display:flex;justify-content:space-between;align-items:center;margin:0 0 12px;font-size:14px;color:var(--muted)}
+.audio button{border:1.5px solid var(--line);background:var(--surface);border-radius:999px;height:38px;padding:0 14px;font-size:14px;font-weight:600;cursor:pointer}
+.audio button[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+/* 하단 고정 바 */
+.dock{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding:10px 16px calc(12px + env(safe-area-inset-bottom,0px))}
+.dock[hidden]{display:none}
+.dock-in{max-width:720px;margin:0 auto}
+.bar{height:6px;background:#E3E9E7;border-radius:3px;overflow:hidden;margin-bottom:6px}
+.bar i{display:block;height:100%;background:var(--green);width:0;transition:width .4s}
+.meta{display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted);margin-bottom:8px;font-variant-numeric:tabular-nums}
+.nav{display:grid;grid-template-columns:96px 1fr;gap:8px}
+
+/* 퀴즈 */
+.q{padding:18px 0;border-top:1px solid var(--line)}
+.q:first-of-type{border-top:0;padding-top:4px}
+.q h3{font-size:16.5px;margin:0 0 10px;line-height:1.5}
+.q h3 small{display:block;color:var(--muted);font-weight:600;font-size:13px}
+.opt{display:flex;gap:10px;align-items:center;border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:8px;cursor:pointer;font-size:15.5px}
+.opt input{width:20px;height:20px;accent-color:var(--green);flex:none;margin:0}
+.opt:has(input:checked){border-color:var(--green);background:var(--green-soft)}
+.q.wrong h3{color:var(--red)}
+.explain{background:var(--red-soft);border-radius:10px;padding:10px 12px;font-size:14.5px;margin-top:4px}
+.result{border-radius:12px;padding:16px;margin-bottom:16px;font-size:16px}
+.result.fail{background:var(--red-soft)}
+.result.pass{background:var(--green-soft)}
+
+/* 서명 */
+.pad-wrap{position:relative;border:1.5px dashed #9FB0AA;border-radius:12px;background:#FCFDFC;margin-top:6px}
+#pad{display:block;width:100%;height:180px;touch-action:none;border-radius:12px}
+.pad-ph{position:absolute;inset:0;display:grid;place-items:center;color:#A3B1AC;font-size:15px;pointer-events:none}
+.pad-tools{display:flex;justify-content:space-between;align-items:center;margin-top:6px;font-size:13px;color:var(--muted)}
+.linkbtn{background:none;border:0;color:var(--green);font-weight:700;cursor:pointer;padding:6px 0;font-size:14px}
+
+/* 이수증 */
+.cert{background:var(--surface);border:2px solid var(--green);border-radius:16px;overflow:hidden}
+.cert-top{background:var(--green);color:#fff;padding:22px 20px}
+.cert-top p{margin:0;font-size:14px;opacity:.85}
+.cert-top h2{color:#fff;font-size:26px;margin:4px 0 0}
+.cert dl{margin:0;padding:8px 20px 4px;display:grid;grid-template-columns:96px 1fr}
+.cert dt,.cert dd{padding:12px 0;border-bottom:1px solid var(--line);margin:0;font-size:15.5px}
+.cert dt{color:var(--muted)}
+.cert dd{font-weight:600}
+.cert .no{font-size:20px;font-weight:800;letter-spacing:.02em;font-variant-numeric:tabular-nums}
+.cert-foot{padding:14px 20px 20px;font-size:14px;color:var(--muted)}
+.stamp{margin-top:16px;font-size:14px;color:var(--ink)}
+
+.resume{background:#FFF7D6;border:1px solid #EBD47A;border-radius:12px;padding:14px;margin-bottom:14px;font-size:15px}
+
+@media (min-width:600px){
+  .keyfig .num{font-size:80px}
+  .keyfig.long .num{font-size:64px}
+  main{padding-top:28px}
+}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+
+.photo{background:#101827;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.photo img{display:block;width:100%;height:auto;aspect-ratio:3/2;object-fit:cover}
+.photo.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:#fff}
+.photo.grid figure{margin:0;position:relative}
+.photo.grid img{aspect-ratio:1/1}
+.photo.grid figcaption{position:absolute;left:0;right:0;bottom:0;padding:14px 4px 4px;font-size:11.5px;font-weight:700;color:#fff;text-align:center;background:linear-gradient(transparent,rgba(10,16,34,.85));line-height:1.25}
+.scene{background:#EEF2FB;border-left:5px solid var(--green);border-radius:10px;padding:12px 14px;margin-bottom:16px}
+.scene b{font-size:12.5px;color:var(--green);letter-spacing:.02em}
+.scene p{margin:4px 0 0;font-size:16px;line-height:1.6;font-weight:600}
+.headline{font-size:21px;line-height:1.4;font-weight:800;letter-spacing:-.02em;margin:0 0 14px;color:var(--green-ink)}
+.slide.safety .headline{color:#1B1B16;background:linear-gradient(transparent 62%,var(--tape) 62%);display:inline;padding:0 2px}
+.slide.safety .headline-wrap{display:block}
+.narr{font-size:15px;line-height:1.75;margin:16px 0;color:#3A4358}
+.act{background:var(--green);color:#fff;border-radius:12px;padding:13px 16px}
+.act b{font-size:12.5px;opacity:.85}
+.act p{margin:4px 0 0;font-size:16px;line-height:1.55;font-weight:700}
+.contacts{margin-top:14px;border:1.5px dashed var(--line);border-radius:12px;padding:12px 14px;font-size:14.5px;line-height:1.6}
+.contacts b{display:block;margin-bottom:4px}
+.contacts li{margin-left:16px}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-in">
+    <div class="brand"><h1 id="brandTitle">파견근로자 사전교육</h1><span id="brandAgency"></span></div>
+    <ol class="steps" id="steps">
+      <li data-s="info"><b>1</b>정보 입력</li>
+      <li data-s="video"><b>2</b>교육 시청</li>
+      <li data-s="quiz"><b>3</b>확인 퀴즈</li>
+      <li data-s="sign"><b>4</b>서명</li>
+    </ol>
+  </div>
+</header>
+
+<main>
+  <!-- 1. 정보 입력 -->
+  <section id="s-info" hidden>
+    <div id="resumeBox"></div>
+    <div class="card">
+      <h2>입사 전 사전교육을 시작합니다</h2>
+      <p class="lead">약 7분 동안 교육 화면을 보고, 확인 퀴즈와 서명을 마치면 이수증이 발급됩니다.</p>
+      <div class="agency"><span>소속 파견사</span><b id="agencyName"></b></div>
+      <form id="infoForm" novalidate>
+        <div class="field"><label for="f-name">이름</label><input id="f-name" autocomplete="name" maxlength="20" required></div>
+        <div class="field"><label for="f-birth">생년월일 6자리</label><input id="f-birth" inputmode="numeric" maxlength="6" placeholder="예: 850312" required></div>
+        <div class="field"><label for="f-phone">휴대폰 번호</label><input id="f-phone" type="tel" inputmode="numeric" maxlength="13" placeholder="01012345678" required></div>
+        <div class="field"><label for="f-site">투입 부서</label><input id="f-site" list="siteList" maxlength="60" placeholder="근무할 부서·프로그램 이름 (예: 보도국, 제작부서)" required><datalist id="siteList"></datalist><div class="hint">모르면 담당자에게 안내받은 부서 이름을 적어 주세요.</div></div>
+        <div class="consent">
+          <dl>
+            <dt>수집 항목</dt><dd>이름, 생년월일, 휴대폰 번호, 투입 부서, 서명, 교육 시청 기록</dd>
+            <dt>이용 목적</dt><dd>파견근로자 사전교육 이수 확인 및 고객사 제출</dd>
+            <dt>보유 기간</dt><dd>수집일로부터 3년</dd>
+          </dl>
+          <div style="margin-top:8px">동의하지 않을 수 있으나, 동의하지 않으면 교육 이수 처리가 되지 않습니다.</div>
+        </div>
+        <label class="check"><input type="checkbox" id="f-consent"> 개인정보 수집·이용에 동의합니다</label>
+        <p class="err" id="infoErr" role="alert"></p>
+        <button class="btn block" type="submit" id="infoBtn">교육 시작하기</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- 2. 교육 시청 -->
+  <section id="s-video" hidden>
+    <div class="audio"><span id="audioHint">소리를 켜면 내용을 읽어 드립니다</span><button type="button" id="audioBtn" aria-pressed="false">음성 안내 켜기</button></div>
+    <article class="slide" id="slide" aria-live="polite">
+      <div class="slide-head"><div class="count" id="slCount"></div><h2 id="slTitle"></h2></div>
+      <div class="photo" id="slIll" role="img"></div>
+      <div class="slide-body">
+        <div class="scene" id="slSceneBox"><b id="slSceneLbl">이런 상황이에요</b><p id="slScene"></p></div>
+        <h3 class="headline" id="slHead"></h3>
+        <ul class="rules" id="slRules"></ul>
+        <p class="narr" id="slNarr"></p>
+        <div class="act" id="slActBox"><b>이렇게 행동하세요</b><p id="slAct"></p></div>
+        <div class="contacts" id="slContacts" hidden></div>
+      </div>
+    </article>
+  </section>
+
+  <!-- 3. 퀴즈 -->
+  <section id="s-quiz" hidden>
+    <div class="card">
+      <h2>확인 퀴즈</h2>
+      <p class="lead" id="quizLead"></p>
+      <div id="quizResult"></div>
+      <div id="quizBox"></div>
+      <p class="err" id="quizErr" role="alert"></p>
+      <button class="btn block" id="quizBtn">채점하기</button>
+    </div>
+  </section>
+
+  <!-- 4. 서약·서명 -->
+  <section id="s-sign" hidden>
+    <div class="card">
+      <h2>준수 서약과 서명</h2>
+      <p class="lead">아래 내용을 확인하고 체크한 뒤 서명해 주세요.</p>
+      <label class="check"><input type="checkbox" class="pl"> 교육 내용을 끝까지 시청하고 이해했습니다.</label>
+      <label class="check"><input type="checkbox" class="pl"> 근무 중 보안·저작권·개인정보 및 안전 수칙을 지키겠습니다.</label>
+      <label class="check"><input type="checkbox" class="pl"> 몸이 아프거나 다치면 즉시 현장 관리자에게 알리겠습니다.</label>
+      <div class="field" style="margin-top:12px"><label>서명 <span style="font-weight:400;color:var(--muted)">(이름을 정자로 써 주세요)</span></label>
+        <div class="pad-wrap"><canvas id="pad"></canvas><div class="pad-ph" id="padPh">여기에 서명</div></div>
+        <div class="pad-tools"><span id="signName"></span><button type="button" class="linkbtn" id="padClear">다시 쓰기</button></div>
+      </div>
+      <p class="err" id="signErr" role="alert"></p>
+      <button class="btn block" id="signBtn">서명 제출하고 이수증 받기</button>
+    </div>
+  </section>
+
+  <!-- 5. 이수증 -->
+  <section id="s-done" hidden>
+    <div class="cert">
+      <div class="cert-top"><p id="certClient"></p><h2>파견근로자 사전교육 이수증</h2></div>
+      <dl>
+        <dt>이수번호</dt><dd class="no" id="cNo"></dd>
+        <dt>이름</dt><dd id="cName"></dd>
+        <dt>투입 부서</dt><dd id="cSite"></dd>
+        <dt>이수 일시</dt><dd id="cAt"></dd>
+        <dt>시청 시간</dt><dd id="cWatch"></dd>
+        <dt>퀴즈</dt><dd id="cQuiz"></dd>
+      </dl>
+      <div class="cert-foot">
+        이 화면을 캡처해 첫 출근 때 현장 관리자에게 보여 주세요.
+        <div class="stamp" id="cAgency"></div>
+      </div>
+    </div>
+    <button class="btn ghost block" style="margin-top:14px" id="nextPerson">다음 사람 교육 시작</button>
+  </section>
+</main>
+
+<div class="dock" id="dock" hidden>
+  <div class="dock-in">
+    <div class="bar"><i id="barFill"></i></div>
+    <div class="meta"><span id="metaLeft"></span><span id="metaRight"></span></div>
+    <div class="nav"><button class="btn ghost" id="prevBtn">이전</button><button class="btn" id="nextBtn">다음</button></div>
+  </div>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+const LS = 'mbc_training_v1';
+let CFG = { client:'문화방송', agency:'에이스휴먼파워', sites:[], minWatch:360, passScore:4, quizTotal:5 };
+let SLIDES = [];
+let st = fresh();
+function fresh(){ return { sessionId:null, step:'info', slide:0, visible:0, elapsed:[], name:'', cert:null }; }
+function save(){ try{ localStorage.setItem(LS, JSON.stringify(st)); }catch(e){} }
+function loadLS(){ try{ return JSON.parse(localStorage.getItem(LS)); }catch(e){ return null; } }
+
+async function api(path, body){
+  const r = await fetch(path, body===undefined ? {} : { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+  const j = await r.json().catch(()=>({}));
+  if(!r.ok){ const e = new Error(j.error || '연결에 실패했습니다. 인터넷 연결을 확인해 주세요.'); e.code=j.code; e.status=r.status; throw e; }
+  return j;
+}
+
+/* ───────── 교육 내용 (총 약 7분) ───────── */
+
+const INK='#141B2E';
+const G=`stroke="${INK}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"`;
+const NO=(cx,cy,r)=>`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#C8372D" stroke-width="6"/><line x1="${cx-r*0.7}" y1="${cy-r*0.7}" x2="${cx+r*0.7}" y2="${cy+r*0.7}" stroke="#C8372D" stroke-width="6" stroke-linecap="round"/>`;
+const T=(x,y,t,sz=14,fill=INK,w=700)=>`<text x="${x}" y="${y}" font-size="${sz}" font-weight="${w}" fill="${fill}" text-anchor="middle" font-family="inherit">${t}</text>`;
+const ILL = {
+gate:`<g ${G}><rect x="40" y="40" width="130" height="130" rx="10" fill="#fff"/><rect x="62" y="64" width="86" height="106" fill="#CFDAF2"/><line x1="105" y1="64" x2="105" y2="170"/>
+ <rect x="188" y="70" width="60" height="84" rx="8" fill="#fff"/><rect x="198" y="84" width="40" height="30" rx="4" fill="#DCEFF7"/><circle cx="218" cy="130" r="7" fill="#F4C20D"/></g>
+ <g ${G}><rect x="250" y="38" width="52" height="72" rx="6" fill="#fff"/><rect x="250" y="38" width="52" height="16" fill="#1E4FA3"/><circle cx="276" cy="76" r="9" fill="#F2C9A0"/><path d="M262 104 q14 -18 28 0" fill="#CFDAF2"/></g>
+ ${T(105,32,'본인 출입증만',14)}${T(240,176,'타인에게 빌려주지 않기',12)}`,
+studio:`<g ${G}><path d="M30 150 L160 150 L290 150 L290 172 L30 172 Z" fill="#B8C2D6"/><rect x="60" y="60" width="200" height="70" rx="6" fill="#2A3A66"/></g>
+ <g ${G}><rect x="90" y="84" width="64" height="38" rx="8" fill="#fff"/><circle cx="122" cy="103" r="12" fill="#CFDAF2"/><path d="M154 94 l22 -10 v38 l-22 -10 z" fill="#fff"/></g>
+ <circle cx="226" cy="76" r="10" fill="#E53935" stroke="${INK}" stroke-width="3"/>
+ <path d="M60 138 q-8 -20 6 -26 M258 138 q8 -20 -6 -26" fill="none" stroke="#F4C20D" stroke-width="6" stroke-linecap="round"/>
+ <path d="M40 30 l22 -14 l22 14 z" fill="#F4C20D" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/>
+ ${T(160,184,'케이블 정리 · 통로 확보 · 촬영 중 정숙',12)}`,
+light:`<g ${G}><line x1="30" y1="34" x2="290" y2="34" stroke-width="6"/><rect x="70" y="40" width="40" height="28" rx="6" fill="#F4C20D"/><rect x="190" y="40" width="40" height="28" rx="6" fill="#F4C20D"/></g>
+ <path d="M80 70 L50 120 L130 120 Z M200 70 L170 120 L250 120 Z" fill="#FFF3B0" opacity=".7"/>
+ <g ${G}><path d="M255 170 L270 70 M285 170 L270 70" fill="none"/><line x1="258" y1="150" x2="282" y2="150"/><line x1="261" y1="120" x2="279" y2="120"/><line x1="264" y1="95" x2="276" y2="95"/></g>
+ <g ${G}><circle cx="268" cy="54" r="9" fill="#F2C9A0"/><path d="M257 50 q11 -16 22 0 z" fill="#F4C20D"/></g>
+ <path d="M40 150 h90" stroke="#C8372D" stroke-width="5" stroke-dasharray="8 6"/>
+ ${T(85,172,'아래 통행 통제',13)}${T(160,20,'2m 이상 = 고소작업',13)}`,
+copyright:`<g ${G}><rect x="50" y="40" width="96" height="124" rx="8" fill="#fff"/><path d="M66 70 h64 M66 88 h64 M66 106 h44" stroke="${INK}" stroke-width="3"/></g>
+ <g ${G}><rect x="176" y="62" width="84" height="56" rx="8" fill="#fff"/><circle cx="218" cy="90" r="16" fill="#CFDAF2"/><rect x="204" y="52" width="28" height="10" rx="3" fill="#B8C2D6"/></g>
+ ${NO(218,90,48)}
+ <g ${G}><circle cx="98" cy="146" r="12" fill="#fff"/></g>${T(98,152,'©',16)}
+ ${T(98,184,'대본·음원·영상',12)}${T(218,172,'무단 촬영·유출 금지',12,'#C8372D',800)}`,
+privacy:`<g ${G}><rect x="40" y="46" width="120" height="100" rx="10" fill="#fff"/><circle cx="76" cy="84" r="14" fill="#F2C9A0"/><path d="M56 128 q20 -28 40 0" fill="#CFDAF2"/><path d="M108 76 h38 M108 94 h38 M108 112 h26" stroke="${INK}" stroke-width="3"/></g>
+ <g ${G}><rect x="204" y="86" width="72" height="60" rx="10" fill="#F4C20D"/><path d="M220 86 v-16 q0 -22 20 -22 q20 0 20 22 v16" fill="none"/><circle cx="240" cy="114" r="7" fill="${INK}"/></g>
+ ${T(100,168,'출연자·직원 정보',13)}${T(240,170,'목적 외 사용 금지',13)}`,
+harass:`<g ${G}><circle cx="100" cy="82" r="26" fill="#F2C9A0"/><path d="M52 176 Q56 124 100 118 Q144 124 148 176 Z" fill="#CFDAF2"/></g>
+ <g ${G}><circle cx="220" cy="82" r="26" fill="#F2C9A0"/><path d="M172 176 Q176 124 220 118 Q264 124 268 176 Z" fill="#fff"/></g>
+ <circle cx="90" cy="80" r="3" fill="${INK}"/><circle cx="110" cy="80" r="3" fill="${INK}"/><circle cx="210" cy="80" r="3" fill="${INK}"/><circle cx="230" cy="80" r="3" fill="${INK}"/>
+ <path d="M148 60 v30" stroke="#C8372D" stroke-width="6" stroke-linecap="round"/><path d="M160 60 v30" stroke="#C8372D" stroke-width="6" stroke-linecap="round"/>
+ ${T(160,26,'존중과 거리두기',15)}`,
+night:`<g ${G}><path d="M110 30 a52 52 0 1 0 60 70 a42 42 0 1 1 -60 -70 z" fill="#F4C20D"/></g>
+ <g fill="#F4C20D"><circle cx="210" cy="40" r="4"/><circle cx="250" cy="64" r="3"/><circle cx="60" cy="50" r="3"/></g>
+ <g ${G}><rect x="190" y="104" width="86" height="62" rx="10" fill="#fff"/><path d="M276 120 q22 0 22 18 q0 18 -22 18" fill="none"/><path d="M210 90 q-6 -10 0 -18 M232 90 q-6 -10 0 -18" fill="none" stroke="#9AA6C0"/></g>
+ <g ${G}><rect x="44" y="124" width="100" height="40" rx="8" fill="#CFDAF2"/><path d="M44 124 v-14 h40 v14" fill="#fff"/></g>
+ ${T(94,184,'휴게시간 확보',13)}${T(233,186,'졸음·피로 시 알리기',12)}`
+,report:`<g ${G}><path d="M44 172 Q46 124 84 118 L108 118 Q146 124 148 172 Z" fill="#fff"/><circle cx="96" cy="88" r="24" fill="#F2C9A0"/>
+ <path d="M124 128 L150 60" stroke-width="9" stroke="${INK}"/><path d="M124 128 L150 60" stroke-width="5" stroke="#fff"/><circle cx="152" cy="54" r="10" fill="#F2C9A0"/>
+ <rect x="168" y="22" width="40" height="34" rx="10" fill="#fff"/><path d="M178 56 l-6 10 l14 -10" fill="#fff"/></g>
+ <path d="M188 30 v14" stroke="#C8372D" stroke-width="5" stroke-linecap="round"/><circle cx="188" cy="50" r="3" fill="#C8372D"/>
+ <circle cx="88" cy="86" r="3" fill="${INK}"/><circle cx="104" cy="86" r="3" fill="${INK}"/><path d="M90 98 q6 4 12 0" stroke="${INK}" stroke-width="3" fill="none" stroke-linecap="round"/>
+ <g ${G}><rect x="216" y="96" width="78" height="56" rx="8" fill="#fff"/><rect x="226" y="28" width="82" height="32" rx="4" fill="#1E4FA3"/></g>
+ <path d="M255 110 v28 M241 124 h28" stroke="#C8372D" stroke-width="8"/>${T(267,50,'비상구',15,'#fff',800)}${T(255,170,'비상구·소화기·구급함 확인',12)}`
+};
+
+function buildSlides(c){ return [
+ { kind:'hygiene', sec:12, intro:true, title:'시작하기 전에',
+   scene:'화면 속 상황이 내 앞에서 벌어진다면 어떻게 행동할지 생각해 보세요.',
+   head:`${c.client}에서 첫 근무를 시작하기 전, 꼭 알아둘 여덟 가지`,
+   narr:`${c.client}에서 첫 근무를 시작하기 전, 꼭 알아둘 여덟 가지를 살펴봅니다. 화면 속 상황이 내 앞에서 벌어진다면 어떻게 행동할지 생각해 보세요.`,
+   rules:[['info','출입·보안 / 촬영장 안전 / 조명·고소 작업 / 저작권'],['info','개인정보 / 성희롱 예방 / 야간 근무 건강 / 사고 즉시 보고'],['info','각 화면은 정해진 시간이 지나야 넘어갑니다. 마지막에 확인 퀴즈 5문항과 서명이 있습니다']] },
+ { kind:'safety', sec:42, img:'01', title:'01  출입·보안',
+   scene:'동료가 출입증을 깜빡했다며 문을 잡아 달라고 합니다. 같이 들어갈 수 있을까요?',
+   head:'출입증은 본인만 사용하세요',
+   rules:[['do','출입 권한이 없으면 보안데스크에 문의'],['do','방문자는 지정된 출입 절차로 안내'],['do','출입증 분실과 미공개 자료 노출은 즉시 보고']],
+   narr:'출입증은 본인만 쓰고, 문이 열린 틈에 다른 사람을 함께 들이지 않습니다. 출입 권한이 없거나 카드가 인식되지 않으면 보안데스크나 현장 담당자에게 확인하세요. 방문객도 지정된 접수 절차를 거쳐야 합니다. 출입증을 잃어버렸다면 바로 보안데스크와 현장 담당자에게 알리세요. 세트 사진, 미공개 대본과 영상은 승인 없이 촬영하거나 개인 채널에 올리지 않습니다.',
+   act:'방문객이 뒤따라오면 문을 잡아 주는 대신 보안데스크로 안내합니다.' },
+ { kind:'safety', sec:50, img:'02', title:'02  촬영장 안전',
+   scene:'급히 메모를 전달해야 하는데 카메라가 세트 안에서 이동하고 있습니다.',
+   head:'카메라가 움직이면 통로 밖에서 멈추세요',
+   rules:[['do','촬영 구역에 들어가기 전 현장 지시 확인'],['do','카메라 이동선과 케이블 구역을 피해 이동'],['do','위험을 보면 작업을 멈추고 담당자에게 알리기']],
+   narr:'촬영장에서는 카메라가 뒤로 움직이거나 세트가 옮겨질 수 있습니다. 들어가기 전에 현장 담당자의 이동 지시를 확인하세요. 카메라가 움직이면 이동선 밖에서 멈추고, 통과해도 된다는 신호를 받은 뒤 지정 통로로 갑니다. 케이블이나 레일을 가로질러 지름길로 가지 말고, 들뜬 케이블 덮개를 발견하면 주변에 먼저 알리고 담당자에게 조치를 요청하세요. 첫날에는 비상구와 대피 동선도 확인합니다.',
+   act:'메모가 급해도 카메라 이동이 끝나고 현장 신호를 받은 뒤 건넙니다.' },
+ { kind:'safety', sec:50, img:'03', title:'03  조명·고소 작업',
+   scene:'선배가 잠깐 사다리에 올라가 조명 각도만 바꿔 달라고 합니다.',
+   head:'조명과 높은 곳 작업은 지정 담당자를 부르세요',
+   rules:[['dont','조명·전원·리프트를 임의로 조작하기'],['do','통제선 밖으로 이동하고 작업 아래로 들어가지 않기'],['do','타는 냄새와 흔들리는 장비는 즉시 알리기']],
+   narr:'조명은 뜨거울 수 있고, 전원과 높은 곳 작업에는 감전이나 추락 위험이 있습니다. 각도만 조금 바꾸는 일이어도 담당 업무와 교육, 현장 승인이 확인되지 않았다면 사다리나 리프트에 오르지 마세요. 통제 구역과 작업자 바로 아래를 피하고, 조명이나 전원은 지정된 조명·전기 담당자에게 맡깁니다. 타는 냄새가 나거나 장비가 흔들리면 직접 만지지 말고 안전한 곳으로 물러나 주변에 알린 뒤 담당자를 부르세요.',
+   act:'“제가 조명 작업 담당이 아니라서, 조명 담당자에게 바로 확인하겠습니다.”' },
+ { kind:'hygiene', sec:44, img:'04', title:'04  저작권',
+   scene:'인터넷에서 찾은 사진을 본방송과 예고 릴스에 함께 쓰자는 요청을 받았습니다.',
+   head:'사진과 음악은 사용 범위 확인 후 반영하세요',
+   rules:[['do','사진·음악·영상의 출처와 이용 조건 확인'],['do','본방송·다시보기·SNS 사용 범위를 각각 확인'],['dont','권리 확인 전 편집본에 반영하기']],
+   narr:'인터넷 사진이나 음악은 내려받을 수 있어도 방송과 홍보에 쓸 수 있는지는 따로 확인해야 합니다. 출처를 적는 것만으로 사용 허락을 받은 건 아닙니다. 본방송에 쓸 수 있어도 다시보기나 소셜미디어 게시까지 허용되는지 제작·권리 담당자에게 확인하세요. 출처 링크와 사용 매체를 전달하고, 확인된 범위 안에서만 씁니다. 마감이 촉박하면 사용이 확인된 대체 자료를 요청하세요.',
+   act:'본방송과 예고 릴스를 각각 적어 권리 담당자에게 확인을 요청합니다.' },
+ { kind:'hygiene', sec:50, img:'05', title:'05  개인정보',
+   scene:'출연자 연락처가 담긴 파일을 이름이 비슷한 다른 사람에게 보냈습니다.',
+   head:'출연자 자료는 승인된 경로로만 보내세요',
+   rules:[['do','출연자 명단·연락처는 업무상 필요한 사람에게만 공유'],['do','발송 전 받는 사람·첨부·공유 권한 확인'],['do','오발송은 회수 가능 여부와 관계없이 즉시 보고']],
+   narr:'출연자나 방청객의 연락처와 신분증 자료는 승인된 시스템에서 필요한 사람에게만 공유하세요. 개인 메일이나 메신저로 옮기지 말고, 보내기 전에는 받는 사람, 첨부파일, 링크의 접근 권한을 확인합니다. 자리를 비울 땐 화면을 잠그세요. 잘못 보냈다면 추가 전송을 멈추고, 언제 누구에게 어떤 자료를 보냈는지 현장 담당자와 개인정보 담당 채널에 바로 알립니다. 회수나 접근 차단은 안내에 따르고, 발송 기록을 보존하세요.',
+   act:'“방금 외부 주소로 출연자 연락처 파일을 잘못 보냈습니다. 발송 시각과 수신 주소를 확인했습니다.”' },
+ { kind:'hygiene', sec:50, img:'06', title:'06  성희롱 예방',
+   scene:'업무 단체방에 동료를 대상으로 한 성적인 농담이 반복됩니다.',
+   head:'불편한 상황은 공식 창구에 바로 상담할 수 있습니다',
+   rules:[['dont','회식·업무 메신저에서 성적인 농담, 원치 않는 접촉'],['do','직접 대응이 어려우면 안전한 곳에서 공식 창구에 상담'],['do','목격자도 알릴 수 있으며 관련 내용은 함부로 공유하지 않기']],
+   narr:'촬영장뿐 아니라 업무 대화방이나 회식에서의 성적인 농담, 신체 평가, 원치 않는 접촉도 문제가 될 수 있습니다. 상대에게 직접 항의하기 어려워도 공식 창구로 바로 상담할 수 있습니다. 문화방송 고충상담 창구 또는 에이스휴먼파워 담당자에게 알리세요. 상급자가 관련돼 있다면 그 사람을 거치지 않고 연락하세요. 목격자도 신고할 수 있습니다. 날짜와 메시지는 보관하되 함부로 공유하지 마세요. 신고나 피해를 이유로 불이익을 주어서는 안 됩니다.',
+   act:'“업무 대화방에서 성적인 발언이 반복돼 상담을 요청합니다. 조용히 이야기할 수 있을까요?”' },
+ { kind:'safety', sec:41, img:'07', title:'07  야간 근무 건강',
+   scene:'새벽 촬영 중 눈이 감기고 어지러운데 장비를 옮겨야 합니다.',
+   head:'졸음이나 어지럼이 오면 바로 알리세요',
+   rules:[['do','근무 전 수면을 확보하고 지정된 휴게시간 이용'],['do','위험한 작업 전 졸음·어지럼을 느끼면 중단하고 알리기'],['dont','퇴근길 졸음이 심한데 운전하기']],
+   narr:'야간에는 졸음이 오면 장비 이동 중 발을 헛디디기 쉽습니다. 눈이 감기거나 어지러우면 장비를 옮기기 전에 작업을 멈추고 현장 책임자에게 상태를 알려 업무 조정이나 휴식을 요청하세요. 근무 전 수면을 확보하고, 지정된 휴게시간에는 물을 마시고 몸을 가볍게 풀어 주세요. 퇴근할 때도 졸음이 심하면 운전대를 잡지 말고 대중교통 등 다른 귀가 수단을 이용하세요.',
+   act:'“지금 어지러워서 장비 이동을 잠시 멈췄습니다. 교대나 휴식이 필요합니다.”' },
+ { kind:'safety', sec:55, img:'08', title:'08  사고 즉시 보고', last:true,
+   scene:'촬영장에서 조명 스탠드가 넘어졌습니다. 사람은 다치지 않았습니다.',
+   head:'위험하면 멈추고 대피한 뒤 즉시 알리세요',
+   rules:[['do','주변에 위험을 알리고 안전한 장소로 이동'],['do','심한 부상·의식 저하·화재 등 긴급 상황은 즉시 119'],['do','현장 책임자에게 즉시 보고하고 파견사에도 공유']],
+   narr:'위험하면 작업을 멈추고 주변에 알려 안전한 곳으로 이동하세요. 심한 부상이나 의식 저하, 화재가 있으면 내부 보고를 기다리지 말고 즉시 119에 신고합니다. 건물과 층, 스튜디오 이름, 환자 상태나 위험 내용을 알려 주세요. 현장 책임자에게 즉시 보고하고 에이스휴먼파워 담당자에게도 공유하세요. 다친 사람이 없는 아차사고도 보고합니다. 예를 들어 ‘지금 2층 스튜디오 입구에 조명 스탠드가 넘어졌습니다. 부상자는 없고 통행을 막고 있습니다’라고 현재 상황을 전하세요.',
+   act:'‘어디서 · 무슨 일이 · 다친 사람은 있는지 · 지금 어떤 조치를 했는지’를 짧게 전합니다.' },
+];}
+const TOTAL = () => SLIDES.reduce((a,s)=>a+s.sec,0);
+
+/* ───────── 화면 전환 ───────── */
+const ORDER = ['info','video','quiz','sign','done'];
+function go(step){
+  st.step = step; save();
+  ORDER.forEach(s => $('#s-'+s).hidden = s!==step);
+  const idx = ORDER.indexOf(step);
+  document.querySelectorAll('#steps li').forEach((li,i)=>{ li.classList.toggle('on', i===idx); li.classList.toggle('done', i<idx); });
+  $('#dock').hidden = step!=='video';
+  if(step!=='video' && 'speechSynthesis' in window) speechSynthesis.cancel();
+  if(step==='video') renderSlide();
+  if(step==='quiz') loadQuiz();
+  if(step==='sign') setupPad();
+  if(step==='done') renderCert();
+  window.scrollTo(0,0);
+}
+
+/* ───────── 1. 정보 입력 ───────── */
+$('#f-phone').addEventListener('input', e => e.target.value = e.target.value.replace(/[^\d]/g,'').slice(0,11));
+$('#f-birth').addEventListener('input', e => e.target.value = e.target.value.replace(/[^\d]/g,'').slice(0,6));
+$('#infoForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const body = { name:$('#f-name').value.trim(), birth:$('#f-birth').value, phone:$('#f-phone').value, site:$('#f-site').value.trim(), consent:$('#f-consent').checked };
+  $('#infoErr').textContent = '';
+  $('#infoBtn').disabled = true;
+  try{
+    const r = await api('/api/sessions', body);
+    st = fresh(); st.sessionId = r.id; st.name = body.name;
+    if(r.minWatch) CFG.minWatch = r.minWatch;
+    go('video');
+  }catch(err){ $('#infoErr').textContent = err.message; }
+  finally{ $('#infoBtn').disabled = false; }
+});
+
+/* ───────── 2. 교육 시청 ───────── */
+let audioOn = false;
+$('#audioBtn').addEventListener('click', () => {
+  audioOn = !audioOn;
+  $('#audioBtn').setAttribute('aria-pressed', audioOn);
+  $('#audioBtn').textContent = audioOn ? '음성 안내 끄기' : '음성 안내 켜기';
+  if(audioOn) speak(SLIDES[st.slide].narr); else if('speechSynthesis' in window) speechSynthesis.cancel();
+});
+function speak(text){
+  if(!('speechSynthesis' in window)) { $('#audioHint').textContent='이 기기는 음성 안내를 지원하지 않습니다. 화면 글을 읽어 주세요.'; return; }
+  speechSynthesis.cancel();
+  if(!audioOn) return;
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'ko-KR'; u.rate = 0.95;
+  const v = speechSynthesis.getVoices().find(v => (v.lang||'').toLowerCase().startsWith('ko'));
+  if(v) u.voice = v;
+  speechSynthesis.speak(u);
+}
+const TOPIC=['출입·보안','촬영장 안전','조명·고소','저작권','개인정보','성희롱 예방','야간 건강','사고 보고'];
+function renderSlide(){
+  const s = SLIDES[st.slide];
+  const el = $('#slide');
+  el.className = 'slide ' + s.kind;
+  $('#slCount').textContent = `${st.slide+1} / ${SLIDES.length}`;
+  $('#slTitle').textContent = s.title;
+  const ph = $('#slIll'); ph.className = 'photo'; ph.innerHTML = '';
+  if(s.intro){
+    ph.classList.add('grid');
+    TOPIC.forEach((t,i)=>{ const f=document.createElement('figure'); f.innerHTML=`<img src="img/0${i+1}.jpg" alt="" loading="lazy"><figcaption>${t}</figcaption>`; ph.append(f); });
+    ph.setAttribute('aria-label','교육 여덟 가지 주제');
+  } else {
+    ph.innerHTML = `<img src="img/${s.img}.jpg" alt="${s.title} 상황 장면">`;
+    ph.setAttribute('aria-label', s.title + ' 장면');
+  }
+  $('#slScene').textContent = s.scene;
+  $('#slSceneLbl').textContent = s.intro ? '생각해 보세요' : '이런 상황이에요';
+  $('#slHead').textContent = s.head;
+  $('#slNarr').textContent = s.narr; $('#slNarr').hidden = !!s.intro;
+  $('#slActBox').hidden = !s.act; if(s.act) $('#slAct').textContent = s.act;
+  const cb = $('#slContacts');
+  if(s.last && CFG.contacts && CFG.contacts.length){
+    cb.hidden = false; cb.innerHTML = '<b>첫 출근 때 확인하세요 (출입 방법 · 비상구 · 현장 보고 연락처)</b><ul></ul>';
+    CFG.contacts.forEach(t => { const li=document.createElement('li'); li.textContent=t; cb.querySelector('ul').append(li); });
+  } else cb.hidden = true;
+  const ul = $('#slRules'); ul.innerHTML = '';
+  const mark = { do:'✓', dont:'✕', info:'•' };
+  s.rules.forEach(([k,t]) => {
+    const li = document.createElement('li'); li.className = k;
+    const m = document.createElement('span'); m.className='m'; m.textContent = mark[k]; m.setAttribute('aria-label', k==='do'?'지킬 것':k==='dont'?'하지 말 것':'');
+    const tx = document.createElement('span'); tx.textContent = t;
+    li.append(m, tx); ul.append(li);
+  });
+  speak(s.narr);
+  updateDock();
+}
+function updateDock(){
+  const s = SLIDES[st.slide];
+  const done = st.elapsed[st.slide]||0;
+  const remain = Math.max(0, s.sec - done);
+  const watched = SLIDES.reduce((a,x,i)=>a+Math.min(st.elapsed[i]||0, x.sec),0);
+  const pct = Math.min(100, Math.round(watched/TOTAL()*100));
+  $('#barFill').style.width = pct+'%';
+  const left = TOTAL()-watched;
+  $('#metaLeft').textContent = `전체 ${pct}% 시청`;
+  $('#metaRight').textContent = left>0 ? (left>=60 ? `남은 시간 약 ${Math.round(left/60)}분` : `남은 시간 ${left}초`) : '시청 완료';
+  $('#prevBtn').disabled = st.slide===0;
+  const last = st.slide===SLIDES.length-1;
+  const nb = $('#nextBtn');
+  nb.disabled = remain>0;
+  nb.textContent = remain>0 ? `${remain}초 후 넘길 수 있어요` : (last ? '확인 퀴즈 풀기' : '다음');
+}
+setInterval(() => {
+  if(st.step!=='video' || document.hidden) return;
+  st.elapsed[st.slide] = (st.elapsed[st.slide]||0) + 1;
+  st.visible++;
+  updateDock();
+  if(st.visible % 5 === 0) save();
+  if(st.visible % 15 === 0) sendProgress();
+}, 1000);
+document.addEventListener('visibilitychange', () => { if(document.hidden && 'speechSynthesis' in window) speechSynthesis.cancel(); });
+function sendProgress(){ return api(`/api/sessions/${st.sessionId}/progress`, { visibleSeconds:st.visible, slide:st.slide }).catch(()=>{}); }
+$('#prevBtn').addEventListener('click', () => { if(st.slide>0){ st.slide--; save(); renderSlide(); window.scrollTo(0,0);} });
+$('#nextBtn').addEventListener('click', async () => {
+  if(st.slide < SLIDES.length-1){ st.slide++; save(); renderSlide(); window.scrollTo(0,0); return; }
+  $('#nextBtn').disabled = true;
+  await sendProgress();
+  go('quiz');
+});
+
+/* ───────── 3. 퀴즈 ───────── */
+let QZ = [];
+async function loadQuiz(){
+  $('#quizLead').textContent = `${CFG.quizTotal}문항 중 ${CFG.passScore}문항 이상 맞히면 통과입니다. 틀려도 다시 풀 수 있어요.`;
+  if(!QZ.length){ try{ QZ = await api('/api/quiz'); }catch(e){ $('#quizErr').textContent = e.message; return; } }
+  const box = $('#quizBox'); box.innerHTML = '';
+  QZ.forEach((x,i) => {
+    const d = document.createElement('div'); d.className='q'; d.id='q'+i;
+    const h = document.createElement('h3'); const sm = document.createElement('small'); sm.textContent = `문제 ${i+1}`;
+    h.append(sm, document.createTextNode(x.q)); d.append(h);
+    x.options.forEach((o,j) => {
+      const l = document.createElement('label'); l.className='opt';
+      const r = document.createElement('input'); r.type='radio'; r.name='q'+i; r.value=j;
+      l.append(r, document.createTextNode(o)); d.append(l);
+    });
+    box.append(d);
+  });
+}
+$('#quizBtn').addEventListener('click', async () => {
+  const answers = QZ.map((x,i) => { const c = document.querySelector(`input[name=q${i}]:checked`); return c ? Number(c.value) : null; });
+  if(answers.some(a => a===null)){ $('#quizErr').textContent = '모든 문제에 답해 주세요.'; return; }
+  $('#quizErr').textContent=''; $('#quizBtn').disabled = true;
+  try{
+    const r = await api(`/api/sessions/${st.sessionId}/quiz`, { answers });
+    document.querySelectorAll('.q').forEach(q => { q.classList.remove('wrong'); q.querySelector('.explain')?.remove(); });
+    const res = $('#quizResult'); res.innerHTML='';
+    const div = document.createElement('div');
+    if(r.passed){ div.className='result pass'; div.textContent = `${r.total}문항 중 ${r.score}문항 정답! 통과했습니다.`; res.append(div); setTimeout(()=>go('sign'), 1200); return; }
+    div.className='result fail'; div.textContent = `${r.total}문항 중 ${r.score}문항 정답입니다. 틀린 문제의 설명을 읽고 다시 풀어 주세요.`; res.append(div);
+    r.wrong.forEach(w => { const q=$('#q'+w.id); q.classList.add('wrong'); const ex=document.createElement('div'); ex.className='explain'; ex.textContent=w.explain; q.append(ex); });
+    window.scrollTo({top:0, behavior:'smooth'});
+  }catch(e){
+    $('#quizErr').textContent = e.message;
+    if(e.code==='WATCH'){ st.slide=0; setTimeout(()=>go('video'), 1800); }
+  }finally{ $('#quizBtn').disabled = false; }
+});
+
+/* ───────── 4. 서명 ───────── */
+let padReady=false, hasInk=false;
+function setupPad(){
+  $('#signName').textContent = st.name ? `서명자: ${st.name}` : '';
+  const c = $('#pad'); const ctx = c.getContext('2d');
+  const fit = () => { const r=c.getBoundingClientRect(), d=window.devicePixelRatio||1; c.width=r.width*d; c.height=r.height*d; ctx.setTransform(d,0,0,d,0,0); ctx.lineWidth=2.6; ctx.lineCap='round'; ctx.lineJoin='round'; ctx.strokeStyle='#141B2E'; hasInk=false; $('#padPh').hidden=false; };
+  requestAnimationFrame(fit);
+  if(padReady) return; padReady=true;
+  let drawing=false, last=null;
+  const pos = e => { const r=c.getBoundingClientRect(); return {x:e.clientX-r.left, y:e.clientY-r.top}; };
+  c.addEventListener('pointerdown', e => { drawing=true; last=pos(e); c.setPointerCapture(e.pointerId); $('#padPh').hidden=true; });
+  c.addEventListener('pointermove', e => { if(!drawing) return; const p=pos(e); ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(p.x,p.y); ctx.stroke(); last=p; hasInk=true; });
+  ['pointerup','pointercancel','pointerleave'].forEach(t => c.addEventListener(t, () => drawing=false));
+  $('#padClear').addEventListener('click', fit);
+  window.addEventListener('resize', () => { if(st.step==='sign' && !hasInk) fit(); });
+}
+function exportSig(){
+  const src=$('#pad'), out=document.createElement('canvas'); out.width=480; out.height=180;
+  const o=out.getContext('2d'); o.fillStyle='#fff'; o.fillRect(0,0,480,180); o.drawImage(src,0,0,480,180);
+  return out.toDataURL('image/png');
+}
+$('#signBtn').addEventListener('click', async () => {
+  const pl = [...document.querySelectorAll('.pl')].every(x => x.checked);
+  if(!pl){ $('#signErr').textContent='서약 항목 3개에 모두 체크해 주세요.'; return; }
+  if(!hasInk){ $('#signErr').textContent='서명란에 이름을 써 주세요.'; return; }
+  $('#signErr').textContent=''; $('#signBtn').disabled=true;
+  try{
+    const r = await api(`/api/sessions/${st.sessionId}/complete`, { signature:exportSig(), pledge:true });
+    st.cert = r; go('done');
+  }catch(e){ $('#signErr').textContent = e.message; }
+  finally{ $('#signBtn').disabled=false; }
+});
+
+/* ───────── 5. 이수증 ───────── */
+const fmt = iso => new Date(iso).toLocaleString('ko-KR', { timeZone:'Asia/Seoul', year:'numeric', month:'long', day:'numeric', hour:'2-digit', minute:'2-digit' });
+function renderCert(){
+  const c = st.cert; if(!c) return;
+  $('#certClient').textContent = `${CFG.client} 방송 현장`;
+  $('#cNo').textContent = c.certNo; $('#cName').textContent = c.name; $('#cSite').textContent = c.site;
+  $('#cAt').textContent = fmt(c.completedAt);
+  $('#cWatch').textContent = `${Math.floor(c.watchSeconds/60)}분 ${c.watchSeconds%60}초`;
+  $('#cQuiz').textContent = `${c.total}문항 중 ${c.quizScore}문항 정답`;
+  $('#cAgency').textContent = `파견사업주 ${CFG.agency}(주)`;
+}
+$('#nextPerson').addEventListener('click', () => {
+  if(!confirm('이 이수증 화면을 닫고 다음 사람 교육을 시작할까요? 캡처를 먼저 해 두세요.')) return;
+  st = fresh(); save(); $('#infoForm').reset(); document.querySelectorAll('.pl').forEach(x=>x.checked=false);
+  QZ=[]; $('#quizResult').innerHTML=''; go('info');
+});
+
+/* ───────── 시작 ───────── */
+(async function init(){
+  try{ CFG = { ...CFG, ...(await api('/api/config')) }; }catch(e){}
+  SLIDES = buildSlides(CFG);
+  document.title = `${CFG.client} 파견근로자 사전교육`;
+  $('#brandTitle').textContent = `${CFG.client} 파견근로자 사전교육`;
+  $('#brandAgency').textContent = CFG.agency;
+  $('#agencyName').textContent = `${CFG.agency}(주)`;
+  CFG.contacts = CFG.contacts||[]; CFG.sites.forEach(s => { const o=document.createElement('option'); o.value=s; $('#siteList').append(o); });
+
+  const saved = loadLS();
+  if(saved && saved.sessionId){
+    if(saved.step==='done' && saved.cert){ st=saved; go('done'); return; }
+    try{
+      const r = await api(`/api/sessions/${saved.sessionId}`);
+      if(r.status==='started'){
+        st = { ...fresh(), ...saved };
+        const resumeStep = saved.step==='info' ? 'video' : saved.step;
+        const b = $('#resumeBox'); b.className='resume';
+        b.textContent = `${st.name}님, 진행 중인 교육이 있습니다. `;
+        const go1 = document.createElement('button'); go1.className='linkbtn'; go1.textContent='이어서 하기';
+        go1.onclick = () => { b.remove(); go(r.quizPassed ? 'sign' : resumeStep); };
+        b.append(go1); go('info'); return;
+      }
+    }catch(e){}
+    st = fresh(); save();
+  }
+  go('info');
+})();
+if('speechSynthesis' in window) speechSynthesis.onvoiceschanged = () => {};
+</script>
+</body>
+</html>

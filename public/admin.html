@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>관리자 · 파견근로자 사전교육 이수 현황</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+:root{--bg:#F1F4FA;--surface:#fff;--ink:#141B2E;--muted:#586079;--line:#D5DDEE;--green:#1E4FA3;--green-ink:#12306B;--green-soft:#E3EAF8;--red:#B8352A;--red-soft:#FAE8E5;--amber:#8A6100;--amber-soft:#FFF4D1;--tape:#F4C20D}
+*{box-sizing:border-box}
+body{margin:0;font-family:Pretendard,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;word-break:keep-all;-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--tape);outline-offset:2px}
+header{background:var(--green-ink);color:#fff;padding:16px 20px}
+.hin{max-width:1280px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px}
+header h1{font-size:17px;margin:0;font-weight:700}
+header button{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.4);border-radius:8px;height:36px;padding:0 12px;cursor:pointer;font-size:14px}
+main{max-width:1280px;margin:0 auto;padding:20px}
+.login{max-width:360px;margin:12vh auto 0;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:28px 24px}
+.login h2{margin:0 0 4px;font-size:20px}
+.login p{margin:0 0 18px;color:var(--muted);font-size:14px}
+.in{width:100%;height:48px;border:1.5px solid var(--line);border-radius:10px;padding:0 12px;background:#fff}
+.btn{height:44px;padding:0 16px;border-radius:10px;border:0;background:var(--green);color:#fff;font-weight:700;cursor:pointer;white-space:nowrap}
+.btn.ghost{background:var(--surface);color:var(--ink);border:1.5px solid var(--line)}
+.err{color:var(--red);font-size:14px;min-height:20px;margin:8px 0}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:16px}
+.stat{background:var(--surface);padding:16px 18px}
+.stat b{display:block;font-size:30px;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.stat span{font-size:13.5px;color:var(--muted)}
+.filters{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end;margin-bottom:12px}
+.filters label{display:flex;flex-direction:column;font-size:12.5px;color:var(--muted);gap:4px}
+.filters .in{height:42px;width:auto;min-width:130px}
+.filters .grow{flex:1;min-width:180px}
+.filters .grow .in{width:100%}
+.spacer{flex:1}
+.tablewrap{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:1080px;font-size:14px}
+th,td{padding:11px 12px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-size:12.5px;color:var(--muted);font-weight:600;background:#F7F9F8;position:sticky;top:0}
+tbody tr:hover{background:#FAFCFB}
+td.num{font-variant-numeric:tabular-nums}
+.badge{display:inline-block;padding:3px 8px;border-radius:6px;font-size:12.5px;font-weight:700}
+.badge.ok{background:var(--green-soft);color:var(--green-ink)}
+.badge.wait{background:var(--amber-soft);color:var(--amber)}
+.link{background:none;border:0;color:var(--green);font-weight:700;cursor:pointer;padding:0;font-size:13.5px}
+.link.del{color:var(--red)}
+.empty{padding:40px;text-align:center;color:var(--muted)}
+.foot{display:flex;justify-content:space-between;color:var(--muted);font-size:13px;margin-top:10px}
+dialog{border:0;border-radius:16px;padding:22px;max-width:520px;width:calc(100% - 32px)}
+dialog::backdrop{background:rgba(21,34,30,.45)}
+dialog h3{margin:0 0 4px;font-size:18px}
+dialog p{margin:0 0 12px;color:var(--muted);font-size:14px}
+dialog img{width:100%;border:1px solid var(--line);border-radius:10px;background:#fff}
+@media (max-width:720px){.stats{grid-template-columns:repeat(2,1fr)} main{padding:14px}}
+</style>
+</head>
+<body>
+<header><div class="hin"><h1>파견근로자 사전교육 이수 현황</h1><button id="logout" hidden>로그아웃</button></div></header>
+<main>
+  <form class="login" id="loginForm">
+    <h2>관리자 로그인</h2>
+    <p>에이스휴먼파워 담당자 전용 화면입니다.</p>
+    <input class="in" type="password" id="pw" placeholder="관리자 비밀번호" autocomplete="current-password">
+    <p class="err" id="loginErr" role="alert"></p>
+    <button class="btn" style="width:100%">로그인</button>
+  </form>
+
+  <div id="dash" hidden>
+    <div class="stats">
+      <div class="stat"><b id="stAll">0</b><span>전체 이수</span></div>
+      <div class="stat"><b id="stToday">0</b><span>오늘 이수</span></div>
+      <div class="stat"><b id="stWeek">0</b><span>최근 7일 이수</span></div>
+      <div class="stat"><b id="stWait">0</b><span>시작 후 미완료</span></div>
+    </div>
+    <div class="filters">
+      <label>상태<select class="in" id="fStatus"><option value="completed">이수 완료</option><option value="started">미완료</option><option value="">전체</option></select></label>
+      <label>부서<select class="in" id="fSite"><option value="">전체 부서</option></select></label>
+      <label>시작일<input class="in" type="date" id="fFrom"></label>
+      <label>종료일<input class="in" type="date" id="fTo"></label>
+      <label class="grow">검색<input class="in" id="fQ" placeholder="이름, 연락처, 이수번호"></label>
+      <button class="btn ghost" id="refresh" type="button">새로고침</button>
+      <button class="btn" id="csv" type="button">엑셀(CSV) 받기</button>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>상태</th><th>이수번호</th><th>이름</th><th>생년월일</th><th>연락처</th><th>투입 부서</th><th>시청 시간</th><th>퀴즈</th><th>교육 시작</th><th>이수 일시</th><th>서명</th><th></th></tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+      <div class="empty" id="empty" hidden>조건에 맞는 기록이 없습니다. 필터를 바꾸거나 교육 링크를 근로자에게 보내 주세요.</div>
+    </div>
+    <div class="foot"><span id="countTxt"></span><span>교육 링크: <b id="eduLink"></b></span></div>
+  </div>
+</main>
+
+<dialog id="sigDlg">
+  <h3 id="sigTitle">서명</h3>
+  <p id="sigSub"></p>
+  <img id="sigImg" alt="근로자 서명">
+  <div style="text-align:right;margin-top:14px"><button class="btn ghost" onclick="this.closest('dialog').close()">닫기</button></div>
+</dialog>
+
+<script>
+const $ = s => document.querySelector(s);
+let TOKEN = sessionStorage.getItem('mbc_admin') || '';
+let ROWS = [], MIN = 540, QT = 5;
+
+async function api(path, opt={}){
+  const r = await fetch(path, { ...opt, headers:{ 'Content-Type':'application/json', Authorization:'Bearer '+TOKEN, ...(opt.headers||{}) } });
+  const j = await r.json().catch(()=>({}));
+  if(r.status===401 && path!=='/api/admin/login'){ logout(); throw new Error(j.error||'다시 로그인해 주세요.'); }
+  if(!r.ok) throw new Error(j.error || '요청에 실패했습니다.');
+  return j;
+}
+const kst = iso => iso ? new Date(iso).toLocaleString('ko-KR',{timeZone:'Asia/Seoul',year:'2-digit',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}) : '';
+const kstDay = iso => iso ? new Date(new Date(iso).getTime()+9*3600e3).toISOString().slice(0,10) : '';
+const phoneFmt = p => p.length===11 ? `${p.slice(0,3)}-${p.slice(3,7)}-${p.slice(7)}` : p.length===10 ? `${p.slice(0,3)}-${p.slice(3,6)}-${p.slice(6)}` : p;
+const mmss = s => `${Math.floor(s/60)}분 ${String(s%60).padStart(2,'0')}초`;
+
+$('#loginForm').addEventListener('submit', async e => {
+  e.preventDefault(); $('#loginErr').textContent='';
+  try{ const r = await api('/api/admin/login',{method:'POST',body:JSON.stringify({password:$('#pw').value})}); TOKEN=r.token; sessionStorage.setItem('mbc_admin',TOKEN); show(); }
+  catch(err){ $('#loginErr').textContent = err.message; }
+});
+function logout(){ TOKEN=''; sessionStorage.removeItem('mbc_admin'); $('#dash').hidden=true; $('#loginForm').hidden=false; $('#logout').hidden=true; }
+$('#logout').onclick = logout;
+
+async function show(){
+  $('#loginForm').hidden=true; $('#dash').hidden=false; $('#logout').hidden=false;
+  $('#eduLink').textContent = location.origin + '/';
+  await load();
+}
+async function load(){
+  const r = await api('/api/admin/records'); ROWS = r.records; MIN = r.minWatch; QT = r.quizTotal;
+  const sites = [...new Set(ROWS.map(x=>x.site))].sort();
+  const cur = $('#fSite').value; $('#fSite').length = 1;
+  sites.forEach(s => { const o=document.createElement('option'); o.value=o.textContent=s; $('#fSite').append(o); });
+  $('#fSite').value = sites.includes(cur) ? cur : '';
+  const done = ROWS.filter(x=>x.status==='completed');
+  const today = kstDay(new Date().toISOString());
+  const weekAgo = Date.now()-7*864e5;
+  $('#stAll').textContent = done.length;
+  $('#stToday').textContent = done.filter(x=>kstDay(x.completedAt)===today).length;
+  $('#stWeek').textContent = done.filter(x=>new Date(x.completedAt).getTime()>=weekAgo).length;
+  $('#stWait').textContent = ROWS.filter(x=>x.status!=='completed').length;
+  render();
+}
+function filtered(){
+  const st=$('#fStatus').value, site=$('#fSite').value, from=$('#fFrom').value, to=$('#fTo').value, q=$('#fQ').value.trim().toLowerCase().replace(/-/g,'');
+  return ROWS.filter(x => {
+    if(st && x.status!==st) return false;
+    if(site && x.site!==site) return false;
+    const d = kstDay(x.completedAt || x.startedAt);
+    if(from && d<from) return false;
+    if(to && d>to) return false;
+    if(q && !(`${x.name} ${x.phone} ${x.certNo||''} ${x.birth}`.toLowerCase().includes(q))) return false;
+    return true;
+  });
+}
+function td(text, cls){ const c=document.createElement('td'); if(cls) c.className=cls; c.textContent=text??''; return c; }
+function render(){
+  const rows = filtered(), tb=$('#tbody'); tb.innerHTML='';
+  $('#empty').hidden = rows.length>0;
+  $('#countTxt').textContent = `${rows.length}건 표시`;
+  rows.forEach(x => {
+    const tr=document.createElement('tr');
+    const s=document.createElement('td'); const b=document.createElement('span');
+    b.className='badge '+(x.status==='completed'?'ok':'wait'); b.textContent = x.status==='completed'?'이수':'미완료'; s.append(b); tr.append(s);
+    tr.append(td(x.certNo||'-','num'), td(x.name), td(x.birth,'num'), td(phoneFmt(x.phone),'num'), td(x.site),
+      td(mmss(x.watchSeconds||0) + (x.watchSeconds>=MIN?'':' (부족)'),'num'),
+      td(x.quizScore==null?'-':`${x.quizScore}/${QT} (${x.quizAttempts}회)`,'num'),
+      td(kst(x.startedAt),'num'), td(kst(x.completedAt)||'-','num'));
+    const sg=document.createElement('td');
+    if(x.hasSignature){ const bt=document.createElement('button'); bt.className='link'; bt.textContent='보기'; bt.onclick=()=>openSig(x); sg.append(bt); } else sg.textContent='-';
+    tr.append(sg);
+    const dl=document.createElement('td'); const db=document.createElement('button'); db.className='link del'; db.textContent='삭제'; db.onclick=()=>del(x); dl.append(db); tr.append(dl);
+    tb.append(tr);
+  });
+}
+async function openSig(x){
+  $('#sigTitle').textContent = `${x.name} 서명`;
+  $('#sigSub').textContent = `${x.certNo} · ${x.site} · ${kst(x.completedAt)}`;
+  $('#sigImg').removeAttribute('src');
+  $('#sigDlg').showModal();
+  try{ const r=await api(`/api/admin/records/${x.id}/signature`); $('#sigImg').src=r.signature; }catch(e){ $('#sigSub').textContent=e.message; }
+}
+async function del(x){
+  if(!confirm(`${x.name}님의 기록을 삭제할까요? 삭제하면 되돌릴 수 없습니다.`)) return;
+  try{ await api(`/api/admin/records/${x.id}`,{method:'DELETE'}); await load(); }catch(e){ alert(e.message); }
+}
+['#fStatus','#fSite','#fFrom','#fTo'].forEach(s=>$(s).addEventListener('change',render));
+$('#fQ').addEventListener('input',render);
+$('#refresh').onclick = () => load().catch(e=>alert(e.message));
+$('#csv').onclick = () => {
+  const rows = filtered();
+  const head = ['상태','이수번호','이름','생년월일','연락처','투입부서','소속파견사','시청시간(초)','퀴즈점수','퀴즈응시횟수','교육시작','이수일시'];
+  const q = v => `"${String(v??'').replace(/"/g,'""')}"`;
+  const lines = [head.map(q).join(',')].concat(rows.map(x => [
+    x.status==='completed'?'이수':'미완료', x.certNo, x.name, "'"+x.birth, phoneFmt(x.phone), x.site, x.agency,
+    x.watchSeconds, x.quizScore==null?'':`${x.quizScore}/${QT}`, x.quizAttempts, kst(x.startedAt), kst(x.completedAt)
+  ].map(q).join(',')));
+  const blob = new Blob(['\uFEFF'+lines.join('\r\n')], {type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download=`방송전문인력_사전교육_이수현황_${kstDay(new Date().toISOString())}.csv`; a.click(); URL.revokeObjectURL(a.href);
+};
+if(TOKEN) show().catch(()=>{});
+</script>
+</body>
+</html>
