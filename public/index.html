@@ -293,7 +293,13 @@ function loadLS(){ try{ return JSON.parse(localStorage.getItem(LS)); }catch(e){ 
 async function api(path, body){
   const r = await fetch(path, body===undefined ? {} : { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
   const j = await r.json().catch(()=>({}));
-  if(!r.ok){ const e = new Error(j.error || '연결에 실패했습니다. 인터넷 연결을 확인해 주세요.'); e.code=j.code; e.status=r.status; throw e; }
+  if(!r.ok){
+    if(j.error==='not_found'){
+      try{ localStorage.removeItem(LS); }catch(e){}
+      const e = new Error('교육 기록을 찾을 수 없습니다. 화면을 새로고침한 뒤 처음부터 다시 시작해 주세요.'); e.code='NOT_FOUND'; e.status=404; throw e;
+    }
+    const e = new Error(j.error || '연결에 실패했습니다. 인터넷 연결을 확인해 주세요.'); e.code=j.code; e.status=r.status; throw e;
+  }
   return j;
 }
 
@@ -445,15 +451,30 @@ $('#audioBtn').addEventListener('click', () => {
   $('#audioBtn').textContent = audioOn ? '음성 안내 끄기' : '음성 안내 켜기';
   if(audioOn) speak(SLIDES[st.slide].narr); else if('speechSynthesis' in window) speechSynthesis.cancel();
 });
+let speakTimer=null, speakKeep=null;
 function speak(text){
   if(!('speechSynthesis' in window)) { $('#audioHint').textContent='이 기기는 음성 안내를 지원하지 않습니다. 화면 글을 읽어 주세요.'; return; }
+  clearTimeout(speakTimer); clearInterval(speakKeep);
   speechSynthesis.cancel();
   if(!audioOn) return;
-  const u = new SpeechSynthesisUtterance(text);
-  u.lang = 'ko-KR'; u.rate = 0.95;
-  const v = speechSynthesis.getVoices().find(v => (v.lang||'').toLowerCase().startsWith('ko'));
-  if(v) u.voice = v;
-  speechSynthesis.speak(u);
+  // 모바일 브라우저는 긴 문장을 끊어 버리므로 짧게 나눠 순서대로 읽는다
+  const parts = (text.match(/[^.!?。]+[.!?。]?/g) || [text]).map(t=>t.trim()).filter(Boolean);
+  const chunks = [];
+  parts.forEach(t => { while(t.length > 90){ let i = t.lastIndexOf(' ', 90); if(i < 30) i = 90; chunks.push(t.slice(0,i)); t = t.slice(i).trim(); } if(t) chunks.push(t); });
+  const voices = speechSynthesis.getVoices();
+  const v = voices.find(v => (v.lang||'').toLowerCase().replace('_','-').startsWith('ko'));
+  speakTimer = setTimeout(() => {
+    chunks.forEach((c, idx) => {
+      const u = new SpeechSynthesisUtterance(c);
+      u.lang = 'ko-KR'; u.rate = 0.95; u.volume = 1;
+      if(v) u.voice = v;
+      if(idx === 0) u.onstart = () => { $('#audioHint').textContent = '음성 안내 재생 중 · 소리가 안 나면 휴대폰 미디어 볼륨(무음 모드)을 확인하세요'; };
+      u.onerror = e => { if(e.error && e.error !== 'canceled' && e.error !== 'interrupted') $('#audioHint').textContent = '이 기기에서 음성이 재생되지 않습니다. 화면 글을 읽어 주세요.'; };
+      speechSynthesis.speak(u);
+    });
+    // 일부 안드로이드 크롬은 재생이 멈추는 문제가 있어 주기적으로 깨워 준다
+    speakKeep = setInterval(() => { if(!speechSynthesis.speaking){ clearInterval(speakKeep); } else if(speechSynthesis.paused){ speechSynthesis.resume(); } }, 5000);
+  }, 120);
 }
 const TOPIC=['출입·보안','촬영장 안전','조명·고소','저작권','개인정보','성희롱 예방','야간 건강','사고 보고'];
 function renderSlide(){
